@@ -43,27 +43,20 @@
 - Demand is recorded weekly.
 - Some center-meal series have gaps between observations.
 - Missing observations must not automatically be treated as zero demand.
-- Historical lag features must use exact calendar-week alignment.
-- Model evaluation must respect chronological order.
+- Lag features must use exact calendar-week alignment.
+- Forecast validation must respect chronological order.
 
 ## Reproduce the validation
 
-From the project root:
-
 ```bash
 PYTHONPATH=src python -m food_demand.data.validation
-```
-
-Run the automated tests:
-
-```bash
 PYTHONPATH=src python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-Use a Python environment with the project dependencies installed.
+Use a Python environment with project dependencies installed.
 
 ## Limitations
 
-- This report describes the available historical training dataset.
-- The checks do not establish whether missing weeks represent zero demand.
-- Passing unit tests does not guarantee complete dataset quality.
+- Results describe the available historical training data.
+- Missing weeks do not necessarily represent zero demand.
+- Unit tests do not guarantee complete dataset quality.
