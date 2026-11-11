@@ -1,0 +1,38 @@
+# Virtual environments
+.venv/
+venv/
+ml_master_env/
+pyvenv.cfg
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+.streamlit/secrets.toml
+
+# Local datasets
+data/raw/
+data/processed/
+data/private/
+
+# Trained models
+models/
+*.joblib
+*.pkl
+
+# Local system and IDE
+.DS_Store
+.idea/
+.vscode/
+.antigravity/
+*.log
+tmp/
