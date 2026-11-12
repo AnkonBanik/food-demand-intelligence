@@ -11,6 +11,7 @@ from food_demand.modeling.inference_data import (
 )
 from food_demand.modeling.metrics import evaluate_forecast
 from food_demand.modeling.ml_config import MLConfig
+from food_demand.modeling.model_artifacts import save_model
 from food_demand.modeling.random_forest import (
     predict_random_forest,
     train_random_forest,
@@ -54,6 +55,17 @@ def main() -> None:
         y_sample,
         config,
     )
+
+    print("Saving trained model artifact...")
+
+    model_path = Path(
+        "models/artifacts/random_forest/"
+        "v1.0.0/model.joblib"
+    )
+
+    save_model(model, model_path)
+
+    print(f"Saved model artifact: {model_path}")
 
     print("Preparing validation features...")
     inference = build_ml_inference_data(df, config)
