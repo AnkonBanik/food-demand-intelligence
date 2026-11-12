@@ -1,0 +1,7 @@
+
+# Food Demand Intelligence
+# Core dependencies
+numpy
+pandas
+matplotlib
+scikit-learn
