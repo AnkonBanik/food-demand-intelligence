@@ -4,7 +4,7 @@
 PYTHON ?= python3
 export PYTHONPATH := src
 
-.PHONY: help test baseline random-forest rf-tuning resource-check manifest
+.PHONY: help test baseline random-forest rf-tuning rf-final resource-check manifest
 
 help:
 	@echo "Food Demand Intelligence"
@@ -14,6 +14,7 @@ help:
 	@echo "  make baseline        Evaluate statistical baseline"
 	@echo "  make random-forest   Run controlled Random Forest experiment"
 	@echo "  make rf-tuning       Run RF-002 hyperparameter research"
+	@echo "  make rf-final        Run RF-002 final evaluation (weeks 136-145)"
 	@echo "  make resource-check  Inspect ML training requirements"
 	@echo "  make manifest        Generate Random Forest experiment manifest"
 
@@ -28,6 +29,9 @@ random-forest:
 
 rf-tuning:
 	$(PYTHON) -m food_demand.modeling.rf_tuning
+
+rf-final:
+	$(PYTHON) -m food_demand.modeling.rf_final_evaluation
 
 resource-check:
 	$(PYTHON) -m food_demand.modeling.resource_check

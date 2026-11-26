@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "RF-002-B",
+  "model": "random_forest",
+  "experiment": "rf002_hyperparameter_tuning",
+  "git_commit": "f302d32919723a1624c5714f1285557c5e6e66a5",
+  "training_samples": 100000,
+  "train_end_week": 115,
+  "validation_start_week": 116,
+  "validation_end_week": 125,
+  "parameters": {
+    "n_estimators": 30,
+    "max_depth": 12,
+    "min_samples_leaf": 3,
+    "n_jobs": 2,
+    "random_state": 42
+  },
+  "metrics": {
+    "observations": 32834,
+    "mae": 126.04860017064757,
+    "rmse": 279.72401945645163,
+    "rmsle": 0.752692854478175
+  },
+  "horizon_metrics": [
+    {
+      "horizon": 1,
+      "target_week": 116,
+      "observations": 3275,
+      "mae": 96.48230568013902,
+      "rmse": 194.76355829107567,
+      "rmsle": 0.6436413603401266
+    },
+    {
+      "horizon": 2,
+      "target_week": 117,
+      "observations": 3290,
+      "mae": 110.2838445716431,
+      "rmse": 238.0402526814173,
+      "rmsle": 0.696757724598801
+    },
+    {
+      "horizon": 3,
+      "target_week": 118,
+      "observations": 3278,
+      "mae": 116.57699083110356,
+      "rmse": 235.8862708498078,
+      "rmsle": 0.7509616821391621
+    },
+    {
+      "horizon": 4,
+      "target_week": 119,
+      "observations": 3221,
+      "mae": 136.0497247179276,
+      "rmse": 293.7676074305245,
+      "rmsle": 0.7935481771364361
+    },
+    {
+      "horizon": 5,
+      "target_week": 120,
+      "observations": 3261,
+      "mae": 124.9528823596169,
+      "rmse": 235.90980025093174,
+      "rmsle": 0.764245153417926
+    },
+    {
+      "horizon": 6,
+      "target_week": 121,
+      "observations": 3298,
+      "mae": 126.78249900612434,
+      "rmse": 333.05135437004,
+      "rmsle": 0.6580993464905244
+    },
+    {
+      "horizon": 7,
+      "target_week": 122,
+      "observations": 3359,
+      "mae": 141.57207846902762,
+      "rmse": 361.9366358028896,
+      "rmsle": 0.7897613741883628
+    },
+    {
+      "horizon": 8,
+      "target_week": 123,
+      "observations": 3331,
+      "mae": 156.8544440994629,
+      "rmse": 346.63450893782374,
+      "rmsle": 0.8696487617579821
+    },
+    {
+      "horizon": 9,
+      "target_week": 124,
+      "observations": 3274,
+      "mae": 131.68259614658174,
+      "rmse": 282.13165391003804,
+      "rmsle": 0.7584406955994023
+    },
+    {
+      "horizon": 10,
+      "target_week": 125,
+      "observations": 3247,
+      "mae": 118.49682268108623,
+      "rmse": 214.87627112026703,
+      "rmsle": 0.7730671980664126
+    }
+  ],
+  "dependencies": {
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "matplotlib": "3.11.0",
+    "scikit-learn": "1.9.0",
+    "joblib": "1.5.3",
+    "xgboost": "3.2.0"
+  },
+  "dataset_sha256": {
+    "train.csv": "a2ed2d7c6905d63a9361d8dd35bc06c8a597831f7185644e0f33ad7bfe20cc81",
+    "meal_info.csv": "9d8045af391c492f531c928d7f3d58581c80d0594776d1f4e53c8b29bbff8f75",
+    "fulfilment_center_info.csv": "c874f74fa392b2c4dd24a167f32a5bee68a444b8bf151acf295cd5d66aa0517f"
+  }
+}
