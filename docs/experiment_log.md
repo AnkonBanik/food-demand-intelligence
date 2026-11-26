@@ -149,7 +149,7 @@ These commands require an environment with the project dependencies installed an
 
 ## Proposed Experiment 003 — Random Forest Hyperparameter Research (RF-002)
 
-**Status:** Planned — not yet executed
+**Status:** Executed — results recorded in the section below
 
 **Objective:** Investigate whether alternative Random Forest configurations improve forecasting accuracy while maintaining reproducibility and computational efficiency.
 
@@ -222,3 +222,54 @@ After tuning, the selected configuration will be evaluated against the existing 
 - Updated experiment log with results and limitations
 
 No candidate is considered production-approved based solely on this tuning experiment.
+
+## Experiment 003 Results — RF-002 Hyperparameter Research
+
+**Status:** Completed
+
+### Tuning results (training through week 115, validation weeks 116–125)
+
+Validation observations: 32,834. Training sample: 100,000 examples. Random seed: 42.
+Candidates ranked by RMSLE, the metric declared before execution.
+
+| Rank | Candidate | Trees | Max depth | Min leaf | MAE | RMSE | RMSLE | Training time (s) |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | RF-002-C | 50 | 12 | 5 | 124.6470 | 277.3994 | 0.7483 | 3.48 |
+| 2 | RF-002-B | 30 | 12 | 3 | 126.0486 | 279.7240 | 0.7527 | 2.11 |
+| 3 | RF-002-D | 50 | 16 | 3 | 126.2268 | 277.6537 | 0.7540 | 4.40 |
+| 4 | RF-002-A | 30 | 8 | 5 | 125.5089 | 282.1643 | 0.7614 | 1.48 |
+
+RF-002-C had the lowest MAE, RMSE and RMSLE. The MAE difference between the best and worst candidate was about 1.3%.
+
+### Final evaluation (training through week 135, evaluation weeks 136–145)
+
+RF-002-C was selected from the tuning ranking and evaluated once on the reserved weeks.
+
+| Model | MAE | RMSE | RMSLE |
+|---|---:|---:|---:|
+| Last-observed baseline | 110.3106 | 214.2156 | 0.7665 |
+| RF-001 | 99.1353 | 178.1079 | 0.7319 |
+| RF-002-C | 98.8656 | 177.6465 | 0.7312 |
+
+Relative to RF-001, RF-002-C reduced MAE by 0.27%, RMSE by 0.26% and RMSLE by 0.10%.
+Relative to the baseline, it reduced MAE by 10.38%, RMSE by 17.07% and RMSLE by 4.61%.
+
+### Interpretation
+
+Changing tree count, depth and leaf size within the tested range produced only small differences.
+The improvement over RF-001 is small, was measured at a single forecast origin, and has not been tested for statistical significance. It should not be treated as a reliable improvement.
+
+The current feature set appears to limit accuracy more than Random Forest hyperparameters do. Future experiments should investigate additional information, particularly known future price and promotion values.
+
+### Limitations
+
+1. Tuning metrics (weeks 116–125) and final metrics (weeks 136–145) come from different windows and are not directly comparable.
+2. The final comparison uses one forecast origin.
+3. Weeks 136–145 were not used to select RF-002 hyperparameters, but they had previously been used to evaluate RF-001. Further model comparisons should use rolling-origin validation.
+4. The training sample was limited to 100,000 examples.
+
+### Reproducibility
+
+- Reports: `data/processed/benchmarks/rf002/` and `data/processed/benchmarks/rf002_final.json` (not committed to Git).
+- Manifests: `experiments/manifests/RF-002-A.json` to `RF-002-D.json` and `RF-002-C-FINAL.json`.
+- Commands: `make rf-tuning` and `make rf-final`.
