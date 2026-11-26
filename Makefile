@@ -1,11 +1,10 @@
-
 # Food Demand Intelligence
 # Reproducible project execution commands
 
 PYTHON ?= python3
 export PYTHONPATH := src
 
-.PHONY: help test baseline random-forest resource-check manifest
+.PHONY: help test baseline random-forest rf-tuning resource-check manifest
 
 help:
 	@echo "Food Demand Intelligence"
@@ -14,6 +13,7 @@ help:
 	@echo "  make test            Run automated tests"
 	@echo "  make baseline        Evaluate statistical baseline"
 	@echo "  make random-forest   Run controlled Random Forest experiment"
+	@echo "  make rf-tuning       Run RF-002 hyperparameter research"
 	@echo "  make resource-check  Inspect ML training requirements"
 	@echo "  make manifest        Generate Random Forest experiment manifest"
 
@@ -25,6 +25,9 @@ baseline:
 
 random-forest:
 	$(PYTHON) -m food_demand.modeling.run_rf_experiment
+
+rf-tuning:
+	$(PYTHON) -m food_demand.modeling.rf_tuning
 
 resource-check:
 	$(PYTHON) -m food_demand.modeling.resource_check

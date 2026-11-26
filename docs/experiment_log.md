@@ -146,3 +146,79 @@ These commands require an environment with the project dependencies installed an
 - Benchmark XGBoost, LightGBM, and CatBoost.
 - Introduce rolling-origin validation.
 - Develop a reproducible model-comparison report and business-facing dashboard.
+
+## Proposed Experiment 003 — Random Forest Hyperparameter Research (RF-002)
+
+**Status:** Planned — not yet executed
+
+**Objective:** Investigate whether alternative Random Forest configurations improve forecasting accuracy while maintaining reproducibility and computational efficiency.
+
+### Evaluation design
+
+| Setting | Value |
+|---|---:|
+| Training cutoff | Week 115 |
+| Validation period | Weeks 116–125 |
+| Forecast horizon | 10 weeks |
+| Training sample target | 100,000 |
+| Random seed | 42 |
+| Feature count | 8 |
+| Parallel jobs | 2 |
+
+Training examples will be generated exclusively from historical observations up to week 115. Validation features will use information available at the fixed forecast origin.
+
+### Candidate configurations
+
+| Configuration | Trees | Maximum depth | Minimum samples per leaf |
+|---|---:|---:|---:|
+| RF-002-A | 30 | 8 | 5 |
+| RF-002-B | 30 | 12 | 3 |
+| RF-002-C | 50 | 12 | 5 |
+| RF-002-D | 50 | 16 | 3 |
+
+All other experimental conditions will remain constant.
+
+
+python3 - << 'EOF'
+from pathlib import Path
+p = Path("docs/experiment_log.md")
+s = p.read_text(encoding="utf-8")
+line = "**Primary selection metric:** RMSLE (MAE breaks ties). Declared before execution.\n\n"
+assert s.count("### Evaluation metrics") == 1
+p.write_text(s.replace("### Evaluation metrics", line + "### Evaluation metrics"), encoding="utf-8")
+EOF
+git diff docs/experiment_log.md | grep "^+" | grep -i "primary selection"
+
+
+### Evaluation metrics
+
+- Mean Absolute Error (MAE)
+- Root Mean Squared Error (RMSE)
+- Root Mean Squared Logarithmic Error (RMSLE)
+- Individual forecast-horizon performance
+- Training time and resource requirements
+
+### Experimental controls
+
+1. Use the same historical dataset and feature definitions.
+2. Apply deterministic sampling with random seed 42.
+3. Keep the training and validation periods identical across candidates.
+4. Do not use validation actual demand when constructing inference features.
+5. Save each candidate's configuration and results separately.
+6. Preserve RF-001 reports, manifests and model artifacts.
+
+### Final evaluation policy
+
+Weeks 136–145 remain reserved for final model comparison. They must not be used to select RF-002 hyperparameters.
+
+After tuning, the selected configuration will be evaluated against the existing RF-001 benchmark using the original evaluation period.
+
+### Expected deliverables
+
+- Reusable experiment execution code
+- Automated tests for experiment configuration and output separation
+- Individual experiment reports
+- RF-002 experiment manifest
+- Updated experiment log with results and limitations
+
+No candidate is considered production-approved based solely on this tuning experiment.
