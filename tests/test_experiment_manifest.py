@@ -1,4 +1,3 @@
-
 """Tests for portable experiment manifest generation."""
 
 import json
@@ -63,9 +62,10 @@ class TestExperimentManifest(unittest.TestCase):
     )
     def test_manifest_generation(self, mock_commit):
         manifest = create_manifest(
-            self.report_path,
-            self.output_path,
-            self.data_dir,
+            report_path=self.report_path,
+            output_path=self.output_path,
+            experiment_id="RF-001",
+            data_dir=self.data_dir,
         )
 
         self.assertEqual(manifest["experiment_id"], "RF-001")
@@ -92,9 +92,10 @@ class TestExperimentManifest(unittest.TestCase):
         self, mock_commit
     ):
         manifest = create_manifest(
-            self.report_path,
-            self.output_path,
-            self.data_dir,
+            report_path=self.report_path,
+            output_path=self.output_path,
+            experiment_id="RF-001",
+            data_dir=self.data_dir,
         )
 
         self.assertEqual(manifest["dataset_sha256"], {})
@@ -110,10 +111,82 @@ class TestExperimentManifest(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             create_manifest(
-                self.report_path,
-                self.output_path,
-                self.data_dir,
+                report_path=self.report_path,
+                output_path=self.output_path,
+                experiment_id="RF-001",
+                data_dir=self.data_dir,
             )
+
+    def test_empty_experiment_id_rejected(self):
+        with self.assertRaises(ValueError):
+            create_manifest(
+                report_path=self.report_path,
+                output_path=self.output_path,
+                experiment_id="  ",
+                data_dir=self.data_dir,
+            )
+
+    def test_unsafe_experiment_id_rejected(self):
+        for bad_id in ("../RF-001", "RF 001", "-RF", "a/b"):
+            with self.subTest(bad_id=bad_id):
+                with self.assertRaises(ValueError):
+                    create_manifest(
+                        report_path=self.report_path,
+                        output_path=self.output_path,
+                        experiment_id=bad_id,
+                        data_dir=self.data_dir,
+                    )
+
+    @patch(
+        "food_demand.modeling.experiment_manifest.get_git_commit",
+        return_value="a" * 40,
+    )
+    def test_existing_manifest_not_overwritten(self, mock_commit):
+        self.output_path.write_text("{}", encoding="utf-8")
+
+        with self.assertRaises(FileExistsError):
+            create_manifest(
+                report_path=self.report_path,
+                output_path=self.output_path,
+                experiment_id="RF-001",
+                data_dir=self.data_dir,
+            )
+
+        self.assertEqual(self.output_path.read_text(), "{}")
+
+    def test_report_without_horizons_rejected(self):
+        self.report["horizon_metrics"] = []
+        self.report_path.write_text(
+            json.dumps(self.report), encoding="utf-8"
+        )
+
+        with self.assertRaises(ValueError):
+            create_manifest(
+                report_path=self.report_path,
+                output_path=self.output_path,
+                experiment_id="RF-001",
+                data_dir=self.data_dir,
+            )
+
+    @patch(
+        "food_demand.modeling.experiment_manifest.get_git_commit",
+        return_value="a" * 40,
+    )
+    def test_unapproved_parameters_not_exported(self, mock_commit):
+        self.report["parameters"]["output_dir"] = "/Users/someone/private"
+        self.report_path.write_text(
+            json.dumps(self.report), encoding="utf-8"
+        )
+
+        manifest = create_manifest(
+            report_path=self.report_path,
+            output_path=self.output_path,
+            experiment_id="RF-001",
+            data_dir=self.data_dir,
+        )
+
+        self.assertNotIn("output_dir", manifest["parameters"])
+        self.assertNotIn("/Users/", self.output_path.read_text())
 
 
 if __name__ == "__main__":
